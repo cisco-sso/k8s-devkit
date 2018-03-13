@@ -10,6 +10,7 @@
 
     ## Clone this repo.
     git clone ssh://git@<BITBUCKET-SERVER>:7999/sopd-sre/kdk.git
+    cd kdk/
 
     ## Create and start your KDK VM.
     ##
