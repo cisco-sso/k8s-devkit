@@ -1,6 +1,6 @@
 # Kubernetes KDK (Kubernetes Development Kit)
 
-**Vagrant Box**
+**k8s-devkit**
 
 ## Getting Started
 
