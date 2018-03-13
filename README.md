@@ -4,7 +4,7 @@
 
 ## Getting Started
 
-```
+```bash
 ## Create or change to a directory where you keep Vagrant files.
 mkdir ~/vagrant
 cd ~/vagrant
