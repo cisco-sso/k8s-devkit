@@ -1,6 +1,6 @@
 # Kubernetes KDK (Kubernetes Development Kit)
 
-**Vagrant VM**
+**Vagrant Box**
 
 ## Getting Started
 
@@ -10,8 +10,8 @@ mkdir ~/vagrant
 cd ~/vagrant
 
 ## Clone this repo.
-git clone ssh://git@<BITBUCKET-SERVER>:7999/sopd-sre/kdk.git
-cd kdk/
+git clone git@github.com:cisco-sso/k8s-devkit.git
+cd k8s-devkit/
 
 ## Create and start your KDK VM.
 ##
