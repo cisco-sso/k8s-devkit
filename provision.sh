@@ -6,12 +6,12 @@ PROVISIONER_DIR=/vagrant
 
 cd "${PROVISIONER_DIR}"
 
-rpm -q deltarpm  || yum -y install deltarpm
 rpm -q yum-utils || yum -y install yum-utils
 
 yum -y update
 yum -y groupinstall development
 
+rpm -q deltarpm      || yum -y install deltarpm
 rpm -q vim-enhanced  || yum -y install vim-enhanced
 rpm -q epel-release  || yum -y install epel-release
 rpm -q ius-release   || yum -y install https://centos7.iuscommunity.org/ius-release.rpm
