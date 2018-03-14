@@ -60,8 +60,12 @@ Vagrant.configure("2") do |config|
   # View the documentation for the provider you are using for more
   # information on available options.
 
+  # Enable ssh-agent forwarding.
+  config.ssh.forward_agent = true
+
   # Run shell script which triggers Ansible Local to prepare Vagrant VM.
   config.vm.provision "shell" do |shell|
     shell.path = "provision.sh"
+    shell.env  = {"SSH_AUTH_SOCK" => "${SSH_AUTH_SOCK}"}
   end
 end

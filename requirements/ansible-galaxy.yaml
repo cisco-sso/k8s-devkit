@@ -1,4 +1,4 @@
 - name: ansible-role-k8s-devkit
   scm: git
-  src: git@<BITBUCKET-SERVER>:7999/sopd-sre/ansible-role-k8s-devkit.git
+  src: ssh://git@<BITBUCKET-SERVER>:7999/sopd-sre/ansible-role-k8s-devkit.git
   version: master
