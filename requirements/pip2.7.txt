@@ -1,0 +1,4 @@
+ansible==2.4.3.0
+molecule==2.10.1
+Jinja2==2.9.6
+PyYAML==3.12
