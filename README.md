@@ -27,3 +27,15 @@ vagrant up
 ## SSH into the KDK VM.
 vagrant ssh
 ```
+
+## Packaging and Reuse.
+
+```bash
+## Package the VM as a Vagrant Box file.
+vagrant package --output package.box
+
+## Import the new Vagrant Box file.
+export KDK_VERSION=v0.1.0  ## This is only an example version string.
+                           ## Please use a actual version string in practice.
+vagrant add package.box --name k8s-devkit-${KDK_VERSION}
+```

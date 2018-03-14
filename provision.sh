@@ -36,7 +36,7 @@ pip2.7 install -r requirements/pip2.7.txt
 pip3.6 install -U pip
 pip3.6 install -r requirements/pip3.6.txt
 
-## Install minimum Ansible roles (e.g. 'ansible-role-k8s-devkit').
+## Install minimum Ansible roles (e.g. 'ansible-role-k8s-devkit-base').
 ansible-galaxy install -r requirements/ansible-galaxy.yaml
 
 set +x
