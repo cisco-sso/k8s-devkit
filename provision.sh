@@ -11,9 +11,11 @@ chmod 0700 ~root/.ssh
 [[ -e ~root/.ssh/known_hosts ]] || ln -s "${PROVISIONER_DIR}/known_hosts" ~root/.ssh
 [[ -e /vagrant/known_hosts   ]] || ln -s "${PROVISIONER_DIR}/known_hosts" ~vagrant/.ssh
 
-yum clean all
+yum clean all --quiet
 rpm -q epel-release || yum -y install epel-release
-yum -y update --exclude=kernel\*  ## Avoid isolated kernel update because it requires reinstall of VM guest additions.
+
+## Avoid isolated kernel updates to avoid breaking VM guest additions.
+yum -y update --exclude=kernel\*
 
 rpm -q yum-utils       || yum -y install yum-utils
 rpm -q vim             || yum -y install vim
@@ -34,10 +36,15 @@ pip2.7 install -r requirements/pip2.7.txt
 pip3.6 install -U pip
 pip3.6 install -r requirements/pip3.6.txt
 
+## Install minimum Ansible roles (e.g. 'ansible-role-k8s-devkit').
 ansible-galaxy install -r requirements/ansible-galaxy.yaml
 
 set +x
 
+## Clean up yum metadata which may become stale during Vagrant box distribution.
+yum clean all --quiet
+
+## Ensure all writes are sync'ed to disk.
 sync
 
 echo OK
