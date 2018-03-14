@@ -5,6 +5,9 @@
 ## Getting Started
 
 ```bash
+## Enable rpm and pip package caching
+vagrant plugin install vagrant-cachier
+
 ## Create or change to a directory where you keep Vagrant files.
 mkdir ~/vagrant
 cd ~/vagrant
