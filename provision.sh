@@ -6,12 +6,15 @@ PROVISIONER_DIR=/vagrant
 
 cd "${PROVISIONER_DIR}"
 
+mkdir -p ~root/.ssh
+chmod 0700 ~root/.ssh
+[[ -e ~root/.ssh/known_hosts ]] || ln -s "${PROVISIONER_DIR}/known_hosts" ~root/.ssh
+[[ -e /vagrant/known_hosts   ]] || ln -s "${PROVISIONER_DIR}/known_hosts" ~vagrant/.ssh
+
 yum clean all
-
-rpm -q yum-utils || yum -y install yum-utils
-
 yum -y update
 
+rpm -q yum-utils       || yum -y install yum-utils
 rpm -q vim             || yum -y install vim
 rpm -q deltarpm        || yum -y install deltarpm
 rpm -q epel-release    || yum -y install epel-release
@@ -25,6 +28,6 @@ rpm -q git             || yum -y install git
 
 pip3.6 install -r requirements/pip3.6.txt
 
-ansible-galaxy install -r requirements/ansible-galaxy.yaml -vvvv
+ansible-galaxy install -r requirements/ansible-galaxy.yaml
 
 sync
