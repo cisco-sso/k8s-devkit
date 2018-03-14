@@ -12,7 +12,7 @@ chmod 0700 ~root/.ssh
 [[ -e /vagrant/known_hosts   ]] || ln -s "${PROVISIONER_DIR}/known_hosts" ~vagrant/.ssh
 
 yum clean all
-yum -y update
+yum -y update --exclude=kernel\*  ## Avoid isolated kernel update because it requires reinstall of VM guest additions.
 
 rpm -q yum-utils       || yum -y install yum-utils
 rpm -q vim             || yum -y install vim
@@ -30,4 +30,8 @@ pip3.6 install -r requirements/pip3.6.txt
 
 ansible-galaxy install -r requirements/ansible-galaxy.yaml
 
+set +x
+
 sync
+
+echo OK
