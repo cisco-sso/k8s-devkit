@@ -7,7 +7,7 @@ export ANSIBLE_FORCE_COLOR=true
 export ANSIBLE_ROLES_PATH=/root/.ansible/roles
 
 echo "## Install Ansible roles."
-ansible-galaxy install -r requirements/ansible-galaxy.yaml
+ansible-galaxy install -f -r requirements/ansible-galaxy.yaml
 
 echo "## Run Ansible."
 sudo ansible-playbook -v \
