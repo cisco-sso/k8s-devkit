@@ -7,17 +7,8 @@ kdk_user: vagrant
 kdk_user_home: /home/vagrant
 
 ## golang
-go_version: 1.10beta2
-go_get:
-  - name: cobra
-    url: github.com/spf13/cobra/cobra
-  - name: dep
-    url: github.com/golang/dep/cmd/dep
-
-## kops
-kops_install_path: /usr/local/bin/kops
-kops_release_checksum: 3f806f914d8bf2a0b9b3c6785689257b7aadcd17
-kops_release_checksum_type: sha1
-kops_release_filename: kops-linux-amd64
-kops_release_url_base: https://github.com/kubernetes/kops/releases/download
-kops_version: 1.8.1
+#go_get:
+#  - name: cobra
+#    url: github.com/spf13/cobra/cobra
+#  - name: dep
+#    url: github.com/golang/dep/cmd/dep
