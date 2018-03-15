@@ -12,5 +12,5 @@ ansible-galaxy install -r requirements/ansible-galaxy.yaml
 echo "## Run Ansible."
 sudo ansible-playbook -v \
   --limit=localhost \
-  --inventory-file=/vagrant/.inventory \
-  /vagrant/.ansible.yaml
+  --inventory-file=/vagrant/.kdk/inventory \
+  /vagrant/.kdk/ansible.yaml

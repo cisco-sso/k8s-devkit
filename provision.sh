@@ -70,7 +70,6 @@ echo "## Symlink config.yaml to vagrant homedir."
 [[ ! -e ~vagrant/config.yaml ]] \
   && ln -s /vagrant/config.yaml ~vagrant/config.yaml
 
-
 echo "## Install userspace 'provision.sh' to vagrant homedir."
 if [[ ! -x /home/vagrant/provision.sh ]] ; then
   cat <<HERE_DOC > /home/vagrant/provision.sh
@@ -84,7 +83,7 @@ HERE_DOC
   chmod 0755 /home/vagrant/provision.sh
 fi
 
-/vagrant/.ansible.sh
+/vagrant/.kdk/ansible.sh
 
 echo "## Clean up yum metadata which may become stale during Vagrant box distribution."
 yum clean all --quiet
