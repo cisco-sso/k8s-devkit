@@ -1,1 +1,11 @@
-foo: bar
+---
+# configuration override file for ansible-role-k8s-devkit
+## ref: http://docs.ansible.com/ansible/latest/playbooks_variables.html
+
+kdk_user: vagrant
+kdk_user_home: /home/vagrant
+
+go_version: 1.10beta2
+go_get:
+  - name: dep
+    url: github.com/golang/dep/cmd/dep

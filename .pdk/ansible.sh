@@ -13,4 +13,5 @@ echo "## Run Ansible."
 sudo ansible-playbook -v \
   --limit=localhost \
   --inventory-file=/vagrant/.kdk/inventory \
-  /vagrant/.kdk/ansible.yaml
+  /vagrant/.kdk/ansible.yaml \
+  --extra-vars=@/vagrant/config.yaml
