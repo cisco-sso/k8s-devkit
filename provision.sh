@@ -94,6 +94,6 @@ yum clean all --quiet
 echo "## Ensure all writes are sync'ed to disk."
 sync
 
-echo "## Provisionining complete!"
+echo "## Provisioning complete!"
 
 echo OK
