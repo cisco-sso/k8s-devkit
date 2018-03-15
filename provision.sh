@@ -28,12 +28,12 @@ for from_dir in "${!from_to_dirs[@]}"; do
     to_dir=${from_to_dirs[$from_dir]}
     ### Ensure dotfiles config directory exists.
     if [ ! -d "${from_dir}" ]; then
-        mkdir -p ${from_dir}
+        sudo -u vagrant mkdir -p ${from_dir}
     fi
     ### Set link to the dotfiles config directory.
     if [ ! -e $to_dir ]; then
-        mkdir -p `dirname $to_dir`
-        ln -s $from_dir $to_dir
+        sudo -u vagrant mkdir -p `dirname $to_dir`
+        sudo -u vagrant ln -s $from_dir $to_dir
     fi
 done
 
@@ -55,20 +55,20 @@ for from_file in "${!from_to_files[@]}"; do
   to_file=${from_to_files[$from_file]}
   ### Ensure dotfiles config file exists and is empty.
   if [ ! -f ${from_file} ]; then
-    mkdir -p `dirname $from_file`
-    touch $from_file
+    sudo -u vagrant mkdir -p `dirname $from_file`
+    sudo -u vagrant touch $from_file
   fi
   ### Set link to the dotfiles config file.
   if [ ! -L $to_file ] || [ ! -e $to_file ]; then
     rm -f $to_file
-    mkdir -p `dirname $to_file`
-    ln -s $from_file $to_file
+    sudo -u vagrant mkdir -p `dirname $to_file`
+    sudo -u vagrant ln -s $from_file $to_file
   fi
 done
 
 echo "## Symlink config.yaml to vagrant homedir."
 [[ ! -e ~vagrant/config.yaml ]] \
-  && ln -s /vagrant/config.yaml ~vagrant/config.yaml
+  && sudo -u vagrant ln -s /vagrant/config.yaml ~vagrant/config.yaml
 
 echo "## Install userspace 'provision.sh' to vagrant homedir."
 if [[ ! -x /home/vagrant/provision.sh ]] ; then
@@ -84,6 +84,9 @@ HERE_DOC
 fi
 
 /vagrant/.kdk/ansible.sh
+
+echo "## Ensure vagrant owns everything in its home dir."
+chown -R 1000:1000 /home/vagrant
 
 echo "## Clean up yum metadata which may become stale during Vagrant box distribution."
 yum clean all --quiet
