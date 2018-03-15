@@ -2,12 +2,21 @@
 
 **k8s-devkit**
 
+## Background
+
+- This Vagrant Box is dedicated to Kubernetes (and other Cloud Native) DevOps.
+- Some example use cases include:
+  - Operating Kubernetes clusters.
+  - Deploying Kubernetes clusters to AWS using `kops`.
+  - Developing and applying Helm Charts and mh Apps.
+- Extends [k8s-devkit-base](https://<BITBUCKET-SERVER>/bitbucket/projects/SOPD-SRE/repos/k8s-devkit-base/browse) which is based on [bento/centos-7.4](https://app.vagrantup.com/bento/boxes/centos-7.4).
+- By default, `vagrant up` and `vagrant provision` will apply the all-in-one [ansible-role-k8s-devkit](https://github.com/cisco-sso/ansible-role-k8s-devkit).
+- `vagrant provision` should be idempotent, meaning that you can run it as many times as you like.
+  - If you find `vagrant provision` does not run well back-to-back, please file a bug or PR a fix.
+
 ## Getting Started
 
 ```bash
-## Enable rpm and pip package caching
-vagrant plugin install vagrant-cachier
-
 ## Create or change to a directory where you keep Vagrant files.
 mkdir ~/vagrant
 cd ~/vagrant
@@ -18,10 +27,7 @@ cd k8s-devkit/
 
 ## Create and start your KDK VM.
 ##
-## This step will take a while as all of the KDK tools are installed.
-##
-## In the future, we'll reduce the duration of this step by packaging
-## the post-provisioning result as its own Vagrant Box. #TODO
+## This step will take a while as all of the KDK tools will be installed.
 vagrant up
 
 ## SSH into the KDK VM.
@@ -31,11 +37,14 @@ vagrant ssh
 ## Packaging and Reuse.
 
 ```bash
-## Package the VM as a Vagrant Box file.
-vagrant package --output package.box
+## Source environment variables.
+direnv allow   ## If you use direnv.
+               ## <or>
+source .envrc  ## If you do not use direnv.
 
-## Import the new Vagrant Box file.
-export KDK_VERSION=v0.1.0  ## This is only an example version string.
-                           ## Please use a actual version string in practice.
-vagrant add package.box --name k8s-devkit-${KDK_VERSION}
+## Package the already provisioned VM as a new Vagrant Box.
+make vagrantExport
+
+## Important the new Vagrant Box.
+make vagrantImport
 ```

@@ -1,0 +1,6 @@
+- hosts: local
+  tasks:
+    - include_vars:
+        file: /vagrant/config.yaml
+  roles:
+    - ansible-role-k8s-devkit

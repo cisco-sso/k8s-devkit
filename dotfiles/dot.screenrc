@@ -1,0 +1,4 @@
+startup_message off
+defscrollback 10000
+escape ^Bb
+hardstatus alwayslastline "%{rk}%H:%S %{yk}%M%d %{wk}%?%-Lw%?%{bw}%n*%f %t%?(%u)%?%{wk}%?%+Lw%?"

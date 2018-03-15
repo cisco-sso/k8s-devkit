@@ -1,50 +1,97 @@
 #!/bin/bash
 
-set -xeuo pipefail
+set -euo pipefail
 
-PROVISIONER_DIR=/vagrant
+echo "## Ensure this script is run as root"
+if [ "${EUID}" -ne 0 ]; then
+    echo "Please run as root"
+    exit
+fi
 
-cd "${PROVISIONER_DIR}"
+cd /vagrant
 
-mkdir -p ~root/.ssh
-chmod 0700 ~root/.ssh
-[[ -e ~root/.ssh/known_hosts ]] || ln -s "${PROVISIONER_DIR}/known_hosts" ~root/.ssh
-[[ -e /vagrant/known_hosts   ]] || ln -s "${PROVISIONER_DIR}/known_hosts" ~vagrant/.ssh
+echo "## Persist the configuration directories for several tools."
+declare -A from_to_dirs
+from_to_dirs=( \
+    ["/vagrant/dotfiles/dot.ssh"]="/home/vagrant/.ssh" \
+    ["/vagrant/dotfiles/dot.aws"]="/home/vagrant/.aws" \
+    ["/vagrant/dotfiles/dot.docker"]="/home/vagrant/.docker" \
+    ["/vagrant/dotfiles/dot.emacs.d"]="/home/vagrant/.emacs.d" \
+    ["/vagrant/dotfiles/dot.gnupg"]="/home/vagrant/.gnupg" \
+    ["/vagrant/dotfiles/dot.gcloud"]="/home/vagrant/.config/gcloud" \
+    ["/vagrant/dotfiles/dot.govc"]="/home/vagrant/.govc" \
+    ["/vagrant/dotfiles/dot.helm"]="/home/vagrant/.helm" \
+    ["/vagrant/dotfiles/dot.mc"]="/home/vagrant/.mc" \
+    ["/vagrant/dotfiles/dot.minikube"]="/home/vagrant/.minikube" \
+    ["/vagrant/dotfiles/dot.kube"]="/home/vagrant/.kube" )
+for from_dir in "${!from_to_dirs[@]}"; do
+    to_dir=${from_to_dirs[$from_dir]}
+    ### Ensure dotfiles config directory exists.
+    if [ ! -d "${from_dir}" ]; then
+        mkdir -p ${from_dir}
+    fi
+    ### Set link to the dotfiles config directory.
+    if [ ! -e $to_dir ]; then
+        mkdir -p `dirname $to_dir`
+        ln -s $from_dir $to_dir
+    fi
+done
 
+echo "## Persist the configuration files for several tools."
+declare -A from_to_files
+from_to_files=( \
+  ["/vagrant/dotfiles/dot.ssh/config"]="/home/vagrant/.ssh/config" \
+  ["/vagrant/dotfiles/dot.gitconfig"]="/home/vagrant/.gitconfig" \
+  ["/vagrant/dotfiles/dot.hub"]="/home/vagrant/.config/hub" \
+  ["/vagrant/dotfiles/dot.emacs"]="/home/vagrant/.emacs" \
+  ["/vagrant/dotfiles/dot.gitignore"]="/home/vagrant/.gitignore" \
+  ["/vagrant/dotfiles/dot.screenrc"]="/home/vagrant/.screenrc" \
+  ["/vagrant/dotfiles/dot.nova"]="/home/vagrant/.nova" \
+  ["/vagrant/dotfiles/dot.supernova"]="/home/vagrant/.supernova" \
+  ["/vagrant/dotfiles/dot.superglance"]="/home/vagrant/.superglance" \
+  ["/vagrant/dotfiles/dot.vimrc"]="/home/vagrant/.vimrc" )
+
+for from_file in "${!from_to_files[@]}"; do
+  to_file=${from_to_files[$from_file]}
+  ### Ensure dotfiles config file exists and is empty.
+  if [ ! -f ${from_file} ]; then
+    mkdir -p `dirname $from_file`
+    touch $from_file
+  fi
+  ### Set link to the dotfiles config file.
+  if [ ! -L $to_file ] || [ ! -e $to_file ]; then
+    rm -f $to_file
+    mkdir -p `dirname $to_file`
+    ln -s $from_file $to_file
+  fi
+done
+
+echo "## Symlink config.yaml to vagrant homedir."
+[[ ! -e ~vagrant/config.yaml ]] \
+  && ln -s /vagrant/config.yaml ~vagrant/config.yaml
+
+
+echo "## Install userspace 'provision.sh' to vagrant homedir."
+if [[ ! -x /home/vagrant/provision.sh ]] ; then
+  cat <<HERE_DOC > /home/vagrant/provision.sh
+#!/bin/bash
+
+set -euo pipefail
+
+sudo /vagrant/provision.sh
+HERE_DOC
+  chown 1000:1000 /home/vagrant/provision.sh
+  chmod 0755 /home/vagrant/provision.sh
+fi
+
+/vagrant/.ansible.sh
+
+echo "## Clean up yum metadata which may become stale during Vagrant box distribution."
 yum clean all --quiet
-rpm -q epel-release || yum -y install epel-release
 
-## Avoid isolated kernel updates to avoid breaking VM guest additions.
-yum -y update --exclude=kernel\*
-
-rpm -q yum-utils       || yum -y install yum-utils
-rpm -q vim             || yum -y install vim
-rpm -q deltarpm        || yum -y install deltarpm
-rpm -q ius-release     || yum -y install https://centos7.iuscommunity.org/ius-release.rpm
-rpm -q python2-pip     || yum -y install python2-pip
-rpm -q python2-devel   || yum -y install python2-devel
-rpm -q python36u       || yum -y install python36u
-rpm -q python36u-devel || yum -y install python36u-devel
-rpm -q python36u-pip   || yum -y install python36u-pip
-rpm -q gcc             || yum -y install gcc
-rpm -q openssl-devel   || yum -y install openssl-devel
-rpm -q git             || yum -y install git
-
-pip2.7 install -U pip
-pip2.7 install -r requirements/pip2.7.txt
-
-pip3.6 install -U pip
-pip3.6 install -r requirements/pip3.6.txt
-
-## Install minimum Ansible roles (e.g. 'ansible-role-k8s-devkit-base').
-ansible-galaxy install -r requirements/ansible-galaxy.yaml
-
-set +x
-
-## Clean up yum metadata which may become stale during Vagrant box distribution.
-yum clean all --quiet
-
-## Ensure all writes are sync'ed to disk.
+echo "## Ensure all writes are sync'ed to disk."
 sync
+
+echo "## Provisionining complete!"
 
 echo OK

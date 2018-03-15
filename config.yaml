@@ -1,3 +1,1 @@
-- hosts: all
-  roles:
-    - ansible-role-k8s-devkit
+foo: bar
