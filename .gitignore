@@ -1,5 +1,6 @@
 *.box
 *.private
+*.retry
 */.venv/*
 */env/*
 */venv/*
@@ -8,12 +9,14 @@
 .DS_Store
 .cache/
 .vagrant/
+ansible-role-k8s-devkit/
 dotfiles/dot.aws/
 dotfiles/dot.emacs.d/
 dotfiles/dot.gcloud/
 dotfiles/dot.gitconfig
 dotfiles/dot.gnupg/
 dotfiles/dot.govc/
+dotfiles/dot.helm/
 dotfiles/dot.hub
 dotfiles/dot.kube/
 dotfiles/dot.minikube/

@@ -85,6 +85,7 @@ fi
 
 /vagrant/.kdk/ansible.sh
 
+echo "  "  # Highlight Ansible results.
 echo "## Ensure vagrant owns everything in its home dir."
 chown -R 1000:1000 /home/vagrant
 
