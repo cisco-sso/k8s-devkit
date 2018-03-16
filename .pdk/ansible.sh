@@ -4,6 +4,8 @@ set -euo pipefail
 
 export ANSIBLE_FORCE_COLOR=true
 export ANSIBLE_ROLES_PATH=/root/.ansible/roles
+export ANSIBLE_VERBOSITY="${ANSIBLE_VERBOSITY:-}"  ## override e.g. "-vv"
+                                                   ## default is not verbose
 export PYTHONUNBUFFERED=1
 
 echo "## Install Ansible roles."
@@ -30,5 +32,5 @@ sudo \
   ansible-playbook \
   --limit=localhost \
   --inventory-file=/vagrant/.kdk/inventory \
-  /vagrant/.kdk/ansible.yaml \
-  --extra-vars=@/vagrant/config.yaml
+  --extra-vars=@/vagrant/config.yaml \
+  ${ANSIBLE_VERBOSITY} /vagrant/.kdk/ansible.yaml
