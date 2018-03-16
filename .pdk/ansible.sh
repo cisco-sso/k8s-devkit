@@ -16,7 +16,7 @@ echo "##       ansible-role-k8s-devkit repo."
 echo "##"
 if [[ -d /vagrant/ansible-role-k8s-devkit ]] ; then
   echo "## Using CUSTOM ansible-role-k8s-devkit"
-  ansible-galaxy install git+file:///vagrant/ansible-role-k8s-devkit
+  ansible-galaxy install -f git+file:///vagrant/ansible-role-k8s-devkit
 else
   echo "## Using DEFAULT ansible-role-k8s-devkit"
   ansible-galaxy install -f -r requirements/ansible-galaxy.yaml
