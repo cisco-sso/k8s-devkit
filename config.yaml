@@ -1,5 +1,7 @@
 ---
 # configuration override file for ansible-role-k8s-devkit
+#
+# ref: https://github.com/cisco-sso/ansible-role-k8s-devkit/blob/master/defaults/main.yml 
 # ref: http://docs.ansible.com/ansible/latest/playbooks_variables.html
 
 ## kdk
