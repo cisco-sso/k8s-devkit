@@ -67,21 +67,25 @@ for from_file in "${!from_to_files[@]}"; do
 done
 
 echo "## Symlink config.yaml to vagrant homedir."
-[[ ! -e ~vagrant/config.yaml ]] \
-  && sudo -u vagrant ln -s /vagrant/config.yaml ~vagrant/config.yaml
+if [[ ! -e ~vagrant/config.yaml ]] ; then
+  sudo -u vagrant ln -s /vagrant/config.yaml ~vagrant/config.yaml
+fi
 
 echo "## Install userspace 'provision.sh' to vagrant homedir."
-if [[ ! -x /home/vagrant/provision.sh ]] ; then
-  cat <<HERE_DOC > /home/vagrant/provision.sh
+cat <<'HERE_DOC' > /home/vagrant/provision.sh
 #!/bin/bash
+
+## WARNING: Do not edit this script.
+##          Any changes you make will be lost with script execution.
 
 set -euo pipefail
 
-sudo /vagrant/provision.sh
+sudo \
+  ANSIBLE_VERBOSITY="${ANSIBLE_VERBOSITY:-}" \
+  /vagrant/provision.sh
 HERE_DOC
-  chown 1000:1000 /home/vagrant/provision.sh
-  chmod 0755 /home/vagrant/provision.sh
-fi
+chown 1000:1000 /home/vagrant/provision.sh
+chmod 0755 /home/vagrant/provision.sh
 
 /vagrant/.kdk/ansible.sh
 
