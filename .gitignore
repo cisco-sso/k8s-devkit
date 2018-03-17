@@ -6,6 +6,7 @@
 */venv/*
 *~
 .#*
+config.yaml
 .DS_Store
 .cache/
 .vagrant/

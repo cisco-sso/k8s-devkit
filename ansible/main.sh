@@ -28,9 +28,26 @@ else
   ansible-galaxy install -f -r ansible/requirements.yaml
 fi
 
+echo "## Applying any Ansible configuration overrides."
+echo "##"
+echo "## NOTE: To override 'ansible-role-k8s-devkit/defaults/main.yaml' you"
+echo "##       must create file 'k8s-devkit/config.yaml'. An"
+echo "##       example is given at 'k8s-devkit/config.yaml.example'."
+echo "##"
+echo "##       Directory 'k8s-devkit' from outside the VM is"
+echo "##       mounted as '/vagrant' inside the VM."
+echo "##"
+if [[ -e /vagrant/config.yaml ]] ; then
+  echo "## User opted into configuration override."
+  export ANSIBLE_FILE="--extra-vars=@/vagrant/config.yaml"
+else
+  echo "## User opted out of configuration override. (default)"
+  export ANSIBLE_FILE=""
+fi
+
 echo "## Run Ansible."
 ansible-playbook \
   --limit=localhost \
   --inventory-file=/vagrant/ansible/inventory \
-  --extra-vars=@/vagrant/config.yaml \
+  ${ANSIBLE_FILE} \
   /vagrant/ansible/main.yaml ${@}

@@ -8,9 +8,8 @@
 kdk_user: vagrant
 kdk_user_home: /home/vagrant
 
-## golang
-#go_get:
-#  - name: cobra
-#    url: github.com/spf13/cobra/cobra
-#  - name: dep
-#    url: github.com/golang/dep/cmd/dep
+# bitbucket
+bitbucket_user: example
+
+# github
+github_user: example

@@ -64,7 +64,7 @@ for dir in "/root/.ssh" "/home/vagrant/.ssh" ; do
 done
 
 echo "## Symlink config.yaml to vagrant homedir."
-if [[ ! -e ~vagrant/config.yaml ]] ; then
+if [[ ! -L ~vagrant/config.yaml ]] ; then
   ln -s /vagrant/config.yaml ~vagrant/config.yaml
 fi
 
