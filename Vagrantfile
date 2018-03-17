@@ -124,6 +124,7 @@ Vagrant.configure("2") do |config|
 
   # Run shell script to prepare Vagrant VM.
   config.vm.provision "shell" do |shell|
+    shell.privileged = false
     shell.path = "provision.sh"
     shell.env = {
       "KDK_FILENAME"  => env('KDK_FILENAME'),

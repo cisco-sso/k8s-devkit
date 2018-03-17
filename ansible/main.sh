@@ -2,10 +2,14 @@
 
 set -euo pipefail
 
+cd /vagrant
+
 export ANSIBLE_FORCE_COLOR=true
 export ANSIBLE_ROLES_PATH=/root/.ansible/roles
-export ANSIBLE_VERBOSITY="${ANSIBLE_VERBOSITY:-}"  ## override e.g. "-vv"
-                                                   ## default is not verbose
+
+## ref: https://github.com/ansible/ansible/pull/22103
+export ANSIBLE_VERBOSITY="${ANSIBLE_VERBOSITY:-0}"
+
 export PYTHONUNBUFFERED=1
 
 echo "## Install Ansible roles."
@@ -21,16 +25,12 @@ if [[ -d /vagrant/ansible-role-k8s-devkit ]] ; then
   ansible-galaxy install -f git+file:///vagrant/ansible-role-k8s-devkit
 else
   echo "## Using DEFAULT ansible-role-k8s-devkit"
-  ansible-galaxy install -f -r requirements/ansible-galaxy.yaml
+  ansible-galaxy install -f -r ansible/requirements.yaml
 fi
 
 echo "## Run Ansible."
-sudo \
-  ANSIBLE_FORCE_COLOR="${ANSIBLE_FORCE_COLOR}" \
-  ANSIBLE_ROLES_PATH="${ANSIBLE_ROLES_PATH}" \
-  PYTHONUNBUFFERED="${PYTHONUNBUFFERED}" \
-  ansible-playbook \
+ansible-playbook \
   --limit=localhost \
-  --inventory-file=/vagrant/.kdk/inventory \
+  --inventory-file=/vagrant/ansible/inventory \
   --extra-vars=@/vagrant/config.yaml \
-  ${ANSIBLE_VERBOSITY} /vagrant/.kdk/ansible.yaml
+  /vagrant/ansible/main.yaml ${@}
