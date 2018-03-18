@@ -20,6 +20,7 @@ dotfiles/dot.govc/
 dotfiles/dot.helm/
 dotfiles/dot.hub
 dotfiles/dot.kube/
+dotfiles/dot.mc/
 dotfiles/dot.minikube/
 dotfiles/dot.ssh/
 dotfiles/dot.vimrc

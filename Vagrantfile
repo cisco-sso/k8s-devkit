@@ -4,7 +4,12 @@
 #####################################################################
 # Checks
 
-if ! (File.directory?("/keybase/team") || File.directory?("/k/team"))
+keybase_root = nil
+if File.directory?("/keybase/team")
+  keybase_root = "/keybase"
+elsif File.directory?("k:/team")
+  keybase_root = "k:"
+else
   puts "WARNING: Required keybase.io VirtualFS is not present"
   puts "  On Linux and OSX, KeybaseFS would be mounted under /keybase"
   puts "  On Windows, KeybaseFS would be mounted under k:"
@@ -23,7 +28,7 @@ KDK_FILENAME = "#{KDK_NAME}.box"
 KDK_BASE_VERSION = "v0.1.0"
 KDK_BASE_NAME = "k8s-devkit-base-#{KDK_BASE_VERSION}"
 KDK_BASE_FILENAME = "#{KDK_BASE_NAME}.box"
-KDK_BASE_TOKEN = File.read("/keybase/team/***REMOVED***/minio-basic-auth/non-prod/pass").strip
+KDK_BASE_TOKEN = File.read("#{keybase_root}/team/***REMOVED***/minio-basic-auth/non-prod/pass").strip
 KDK_BASE_URL = "https://token:#{KDK_BASE_TOKEN}@minio.platform.csco.cloud/platform-public/vbox/#{KDK_BASE_FILENAME}"
 KDK_BASE_SHA256 = "5ac30bb2a0dd939f466984cd2952572bccbf3c45fc9c90baa0b5099c1f682129"
 
@@ -94,13 +99,8 @@ Vagrant.configure("2") do |config|
   end
   ## Place to store secrets.
   ## ATTENTION: Requires Keybase client activation/sign-in on host OS.
-  # Linux and OSX KeybaseFS location
-  if File.directory?(File.expand_path("/keybase"))
-    config.vm.synced_folder "/keybase", "/keybase"
-  end
-  # Windows KeybaseFS location
-  if File.directory?(File.expand_path("/k"))
-    config.vm.synced_folder "/k", "/keybase"
+  if !keybase_root.nil? && File.directory?(File.expand_path(keybase_root))
+    config.vm.synced_folder keybase_root, "/keybase"
   end
 
   # Share an additional folder to the guest VM. The first argument is
