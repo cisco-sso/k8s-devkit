@@ -121,10 +121,23 @@ ssh-add ~/.ssh/id_rsa
 ssh-add -l  # verify that the key has been loaded
 
 # Clone this repo (must be on VPN)
+#   Git will automatically convert line endings from Unix style (LF) to Windows
+#     style (CRLF) upon git clone.  We need to disable this because bash
+#     scripts will not run without the correct line endings.  Thus, we set the
+#     git config to disable "autocrlf"
+#   If you are on Windows, and the "git clone" hangs with "Putty" mentioned in
+#     the error message, it may be that your system is configured to default to
+#     using Putty as the ssh binary.  This is no good, because Putty is
+#     incompatible with OpenSSH ssh-agent, which is needed to forward the ssh
+#     keys into the vagrant machine.  Thus, unset the the GIT_SSH env variable
+#     with: `unset GIT_SSH`
+git config --global core.autocrlf false
 git clone git@github.com:cisco-sso/k8s-devkit.git
 cd k8s-devkit/
 
 # Create your config.yaml
+#  The config.yaml file will look to be missing line endings if you open the
+#    file using notepad.exe.  Please edit the file below using wordpad.exe.
 cp config.yaml.example config.yaml
 <Edit to customize config.yaml with your github user, bitbucket user, etc>
 
