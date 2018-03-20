@@ -4,8 +4,8 @@ set -euo pipefail
 
 echo "## Persist the configuration directories for several tools."
 # Do not include the "~/home/vagrant/.helm" directory, since helm plugin
-#   install will symlink and thus break on Windows10 /vagrant mounts whose
-#   filesystem does not support symlinks.
+#   install will symlink in the target host directory and thus break on
+#   Windows10 /vagrant mounts whose filesystem does not support symlinks.
 declare -A from_to_dirs
 from_to_dirs=( \
     ["/vagrant/dotfiles/dot.ssh"]="/home/vagrant/.ssh" \

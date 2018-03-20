@@ -131,13 +131,14 @@ ssh-add -l  # verify that the key has been loaded
 #     incompatible with OpenSSH ssh-agent, which is needed to forward the ssh
 #     keys into the vagrant machine.  Thus, unset the the GIT_SSH env variable
 #     with: `unset GIT_SSH`
-git config --global core.autocrlf false
+Windows: git config --global core.autocrlf false
 git clone git@github.com:cisco-sso/k8s-devkit.git
 cd k8s-devkit/
 
 # Create your config.yaml
-#  The config.yaml file will look to be missing line endings if you open the
-#    file using notepad.exe.  Please edit the file below using wordpad.exe.
+#  On Windows, the config.yaml file will look to be missing line endings if you
+#    open the file using notepad.exe.  Please edit the file below using
+#    wordpad.exe.
 cp config.yaml.example config.yaml
 <Edit to customize config.yaml with your github user, bitbucket user, etc>
 
@@ -147,6 +148,99 @@ vagrant up
 
 # SSH into the KDK VM.
 vagrant ssh
+```
+
+## Configuring your KDK Machie
+
+* `~/.aws/config`: Ensure there is an entry for each AWS account that you must
+  access.  Tools such as the aws-cli, kops, and helm depend on these settings.
+  The name of each profile must match that listed in the http://go2/aws index
+  page.
+
+```bash
+# EXAMPLE: ~/.aws/config
+
+[profile ***REMOVED***]
+output = json
+region = us-west-1
+
+[profile ***REMOVED***]
+output = json
+region = us-west-1
+
+[profile ***REMOVED***]
+output = json
+region = us-east-2
+
+[profile ***REMOVED***]
+output = json
+region = us-east-2
+
+[profile ***REMOVED***]
+output = json
+region = us-east-2
+```
+
+* `~/.aws/credentials`: Ensure there is an entry for each AWS account that you
+  must access.  Tools such as the aws-cli, kops, and helm depend on these
+  settings.  The name of each profile must match that listed in the
+  http://go2/aws index page.  Be sure to replace your key_id and access_key for
+  each entry.
+
+```bash
+# EXAMPLE: ~/.aws/credentials
+[***REMOVED***]
+aws_access_key_id = XXXXXXXXXXXXXXXXXXXX
+aws_secret_access_key = YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY
+
+[***REMOVED***]
+aws_access_key_id = XXXXXXXXXXXXXXXXXXXX
+aws_secret_access_key = YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY
+
+[***REMOVED***]
+aws_access_key_id = XXXXXXXXXXXXXXXXXXXX
+aws_secret_access_key = YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY
+
+[***REMOVED***]
+aws_access_key_id = XXXXXXXXXXXXXXXXXXXX
+aws_secret_access_key = YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY
+
+[***REMOVED***]
+aws_access_key_id = XXXXXXXXXXXXXXXXXXXX
+aws_secret_access_key = YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY
+```
+
+## Using your KDK Machine
+
+```
+cd ~/
+git clone git@github.com:cisco-sso/k8s-deploy.git
+cd k8s-deploy
+direnv allow
+
+# All of your work must be done from a cluster directory.  Upon entering a
+#   cluster directory, `direnv` will automatically set your enviromental
+#   configurations.  Upon entering a cluster directory for the first time, you
+#   must run `direnv allow` to permanently record that direnv is allowed to
+#   execute the .envrc script.
+
+# Activate cluster1 settings by entering the directory
+cd clusters/cluster1.***REMOVED***
+direnv allow
+
+# Check that kops works
+kops validate cluster
+
+# Check that kubectl works
+kubectl cluster-info
+
+# Check that helm works
+helm ls
+
+# Activate cluster3 settings by entering the directory
+cd ../cluster3.***REMOVED***
+direnv allow
+... <do the same thing above to verify that you can access cluster3>
 ```
 
 ## Updating your KDK Mahcine
@@ -165,6 +259,8 @@ vagrant provision  # if the machine is already up
 ```
 
 ## Packaging and Reuse.
+
+Only KDK maintainers need to use this section.
 
 ```bash
 ## Package the already provisioned VM as a new Vagrant Box.

@@ -4,7 +4,10 @@
 # ref: https://github.com/cisco-sso/ansible-role-k8s-devkit/blob/master/defaults/main.yml 
 # ref: http://docs.ansible.com/ansible/latest/playbooks_variables.html
 
-## kdk
+# KDK
+#   User should remain `vagrant` for KDK virtual machine.
+#   Change these settings if attempting an unsupported install on a regular
+#     Centos7 box.
 kdk_user: vagrant
 kdk_user_home: /home/vagrant
 
