@@ -33,8 +33,9 @@ done
 
 echo "## Persist the configuration files for several tools."
 declare -A from_to_files
+#  Fails on Windows10
+#  ["/vagrant/dotfiles/dot.ssh/config"]="/home/vagrant/.ssh/config" \
 from_to_files=( \
-  ["/vagrant/dotfiles/dot.ssh/config"]="/home/vagrant/.ssh/config" \
   ["/vagrant/dotfiles/dot.gitconfig"]="/home/vagrant/.gitconfig" \
   ["/vagrant/dotfiles/dot.hub"]="/home/vagrant/.config/hub" \
   ["/vagrant/dotfiles/dot.emacs"]="/home/vagrant/.emacs" \

@@ -228,6 +228,10 @@ direnv allow
 cd clusters/cluster1.***REMOVED***
 direnv allow
 
+# Ensure that aws cli works
+#   Upon failure, check your ~/.aws config files
+aws ec2 describe-instances
+
 # Check that kops works
 kops validate cluster
 
