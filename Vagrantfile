@@ -97,11 +97,24 @@ Vagrant.configure("2") do |config|
   if File.directory?(File.expand_path("~/Dev"))
     config.vm.synced_folder "~/Dev", "/home/vagrant/Dev"
   end
+
   ## Place to store secrets.
   ## ATTENTION: Requires Keybase client activation/sign-in on host OS.
-  if !keybase_root.nil? && File.directory?(File.expand_path(keybase_root))
-    config.vm.synced_folder keybase_root, "/keybase"
-  end
+  require 'pathname'
+  keybase_dirs = [ "private", "public", "team" ]
+  keybase_dirs.each { |dir|
+    guest_path = "/keybase/" + dir
+    host_path = String(Pathname.new(keybase_root + "/" + dir).realpath)
+
+    if File.directory?(host_path)
+      # parent dirs to be auto-created by synced_folder mount
+      config.vm.synced_folder host_path, guest_path
+    else
+      puts "WARNING: Failed to mount keybase.io VirtualFS"
+      puts "  host_path: " + host_path
+      puts "  guest_path: " + guest_path
+    end
+  }
 
   # Share an additional folder to the guest VM. The first argument is
   # the path on the host to the actual folder. The second argument is
