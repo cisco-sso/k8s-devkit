@@ -42,6 +42,7 @@ from_to_files=( \
   ["/vagrant/dotfiles/dot.gitignore"]="/home/vagrant/.gitignore" \
   ["/vagrant/dotfiles/dot.screenrc"]="/home/vagrant/.screenrc" \
   ["/vagrant/dotfiles/dot.nova"]="/home/vagrant/.nova" \
+  ["/vagrant/dotfiles/dot.openstack"]="/home/vagrant/.config/openstack" \
   ["/vagrant/dotfiles/dot.supernova"]="/home/vagrant/.supernova" \
   ["/vagrant/dotfiles/dot.superglance"]="/home/vagrant/.superglance" \
   ["/vagrant/dotfiles/dot.vimrc"]="/home/vagrant/.vimrc" )

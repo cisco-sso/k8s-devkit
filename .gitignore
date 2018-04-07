@@ -22,5 +22,6 @@ dotfiles/dot.hub
 dotfiles/dot.kube/
 dotfiles/dot.mc/
 dotfiles/dot.minikube/
+dotfiles/dot.openstack/
 dotfiles/dot.ssh/
 dotfiles/dot.vimrc
