@@ -45,7 +45,9 @@ from_to_files=( \
   ["/vagrant/dotfiles/dot.openstack"]="/home/vagrant/.config/openstack" \
   ["/vagrant/dotfiles/dot.supernova"]="/home/vagrant/.supernova" \
   ["/vagrant/dotfiles/dot.superglance"]="/home/vagrant/.superglance" \
-  ["/vagrant/dotfiles/dot.vimrc"]="/home/vagrant/.vimrc" )
+  ["/vagrant/dotfiles/dot.vimrc"]="/home/vagrant/.vimrc" \
+  ["/vagrant/dotfiles/dot.tmux.conf"]="/home/vagrant/.tmux.conf" \
+  ["/vagrant/dotfiles/dot.tmux.conf.local"]="/home/vagrant/.tmux.conf.local" )
 
 for from_file in "${!from_to_files[@]}"; do
   to_file=${from_to_files[$from_file]}
