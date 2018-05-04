@@ -127,6 +127,7 @@ Vagrant.configure("2") do |config|
   config.vm.provider "virtualbox" do |vb|
     vb.memory = 4000   # Megabytes
     vb.cpus = 2        # CPU Cores
+    vb.customize ["modifyvm", :id, "--cableconnected1", "on"]
   end
 
   # Enable ssh-agent forwarding.
