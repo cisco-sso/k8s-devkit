@@ -94,8 +94,16 @@ Vagrant.configure("2") do |config|
 
   # Mount some directories from host in guest if they exist.
   ## Place to store your "Dev" stuff.
-  if File.directory?(File.expand_path("~/Dev"))
-    config.vm.synced_folder "~/Dev", "/home/vagrant/Dev"
+  require 'yaml'
+
+  kdk_dev_folder = YAML.load_file(File.dirname(File.expand_path(__FILE__)) + "/config.yaml")['kdk_dev_folder']
+
+  if !kdk_dev_folder
+    kdk_dev_folder = "Dev"
+  end
+
+  if File.directory?(File.expand_path("~/" + kdk_dev_folder))
+    config.vm.synced_folder "~/" + kdk_dev_folder, "/home/vagrant/Dev"
   end
 
   ## Place to store secrets.
