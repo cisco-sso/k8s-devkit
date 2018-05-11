@@ -24,13 +24,6 @@ end
 
 KDK_VERSION = "v0.1.0"
 KDK_NAME = "k8s-devkit-#{KDK_VERSION}"
-KDK_FILENAME = "#{KDK_NAME}.box"
-KDK_BASE_VERSION = "v0.1.0"
-KDK_BASE_NAME = "k8s-devkit-base-#{KDK_BASE_VERSION}"
-KDK_BASE_FILENAME = "#{KDK_BASE_NAME}.box"
-KDK_BASE_TOKEN = File.read("#{keybase_root}/team/***REMOVED***/minio-basic-auth/non-prod/pass").strip
-KDK_BASE_URL = "https://token:#{KDK_BASE_TOKEN}@minio.platform.csco.cloud/platform-public/vbox/#{KDK_BASE_FILENAME}"
-KDK_BASE_SHA256 = "5ac30bb2a0dd939f466984cd2952572bccbf3c45fc9c90baa0b5099c1f682129"
 
 def env(name)
    # Returns string from enviroment first, otherwise the variable value
@@ -66,11 +59,7 @@ Vagrant.configure("2") do |config|
 
   # Every Vagrant development environment requires a box. You can search for
   # boxes at https://vagrantcloud.com/search.
-  config.vm.box = env('KDK_BASE_NAME')
-  config.vm.box_download_checksum = env('KDK_BASE_SHA256')
-  config.vm.box_download_checksum_type = "sha256"
-  config.vm.box_download_insecure = true
-  config.vm.box_url = env('KDK_BASE_URL')
+  config.vm.box = "bento/centos-7.4"
 
   # Create a forwarded port mapping which allows access to a specific port
   # within the machine from a port on the host machine. In the example below,
@@ -149,7 +138,6 @@ Vagrant.configure("2") do |config|
     shell.privileged = false
     shell.path = "provision.sh"
     shell.env = {
-      "KDK_FILENAME"  => env('KDK_FILENAME'),
       "KDK_NAME"      => env('KDK_NAME'),
       "KDK_VERSION"   => env('KDK_VERSION'),
       "SSH_AUTH_SOCK" => "${SSH_AUTH_SOCK}"

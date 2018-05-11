@@ -25,3 +25,4 @@ dotfiles/dot.minikube/
 dotfiles/dot.openstack/
 dotfiles/dot.ssh/
 dotfiles/dot.vimrc
+.*-bootstrapped

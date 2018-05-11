@@ -2,6 +2,44 @@
 
 set -euo pipefail
 
+PROVISIONER_DIR=/vagrant
+
+cd "${PROVISIONER_DIR}"
+
+sudo yum clean all --quiet
+rpm -q epel-release || sudo yum -y install epel-release
+
+echo "## Install base packages (yum)."
+rpm -q yum-utils       || sudo yum -y install yum-utils
+rpm -q vim             || sudo yum -y install vim
+rpm -q deltarpm        || sudo yum -y install deltarpm
+rpm -q ius-release     || sudo yum -y install https://centos7.iuscommunity.org/ius-release.rpm
+rpm -q python2-pip     || sudo yum -y install python2-pip
+rpm -q python2-devel   || sudo yum -y install python2-devel
+rpm -q python36u       || sudo yum -y install python36u
+rpm -q python36u-devel || sudo yum -y install python36u-devel
+rpm -q python36u-pip   || sudo yum -y install python36u-pip
+rpm -q gcc             || sudo yum -y install gcc
+rpm -q openssl-devel   || sudo yum -y install openssl-devel
+rpm -q git             || sudo yum -y install git
+
+echo "## Install base packages (pip2.7)."
+if [ ! -e /vagrant/.pip2.7-bootstrapped ] ; then
+  sudo pip2.7 install -U pip
+  sudo pip2.7 install -r requirements/pip2.7.txt
+fi
+touch /vagrant/.pip2.7-bootstrapped
+
+echo "## Install base packages (pip3.6)."
+if [ ! -e /vagrant/.pip3.6-bootstrapped ] ; then
+  sudo pip3.6 install -U pip
+  sudo pip3.6 install -r requirements/pip3.6.txt
+fi
+touch /vagrant/.pip3.6-bootstrapped
+
+echo "## Clean up yum metadata which may become stale during Vagrant box distribution."
+sudo yum clean all --quiet
+
 echo "## Persist the configuration directories for several tools."
 #  Do not include:
 #     ["/vagrant/dotfiles/dot.helm"]="/home/vagrant/.helm" \
@@ -62,11 +100,6 @@ for from_file in "${!from_to_files[@]}"; do
     mkdir -p `dirname $to_file`
     ln -s $from_file $to_file
   fi
-done
-
-echo "## Prune symlinks for known_hosts (inherited from base image)"
-for dir in "/root/.ssh" "/home/vagrant/.ssh" ; do
-  sudo find "${dir}" -name known_hosts -type l | xargs sudo rm -f
 done
 
 echo "## Symlink config.yaml to vagrant homedir."
