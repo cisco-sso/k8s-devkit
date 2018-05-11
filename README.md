@@ -9,9 +9,7 @@
   * Operating Kubernetes clusters.
   * Deploying Kubernetes clusters to AWS using `kops`.
   * Developing and applying Helm Charts and mh Apps.
-* Extends
-  [k8s-devkit-base](https://<BITBUCKET-SERVER>/bitbucket/projects/SOPD-SRE/repos/k8s-devkit-base/browse)
-  which is based on
+* Extends:
   [bento/centos-7.4](https://app.vagrantup.com/bento/boxes/centos-7.4).
 * By default, `vagrant up` and `vagrant provision` will apply the all-in-one
   [ansible-role-k8s-devkit](https://github.com/cisco-sso/ansible-role-k8s-devkit).
