@@ -85,9 +85,11 @@ Vagrant.configure("2") do |config|
   ## Place to store your "Dev" stuff.
   require 'yaml'
 
-  kdk_dev_folder = YAML.load_file(File.dirname(File.expand_path(__FILE__)) + "/config.yaml")['kdk_dev_folder']
+  config_file = File.dirname(File.expand_path(__FILE__)) + "/config.yaml"
 
-  if !kdk_dev_folder
+  if File.exist?(config_file)
+    kdk_dev_folder = YAML.load_file(config_file)['kdk_dev_folder']
+  else
     kdk_dev_folder = "Dev"
   end
 

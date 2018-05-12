@@ -24,18 +24,12 @@ rpm -q openssl-devel   || sudo yum -y install openssl-devel
 rpm -q git             || sudo yum -y install git
 
 echo "## Install base packages (pip2.7)."
-if [ ! -e /vagrant/.pip2.7-bootstrapped ] ; then
-  sudo pip2.7 install -U pip
-  sudo pip2.7 install -r requirements/pip2.7.txt
-fi
-touch /vagrant/.pip2.7-bootstrapped
+sudo pip2.7 install -U pip
+sudo pip2.7 install -r requirements/pip2.7.txt
 
 echo "## Install base packages (pip3.6)."
-if [ ! -e /vagrant/.pip3.6-bootstrapped ] ; then
-  sudo pip3.6 install -U pip
-  sudo pip3.6 install -r requirements/pip3.6.txt
-fi
-touch /vagrant/.pip3.6-bootstrapped
+sudo pip3.6 install -U pip
+sudo pip3.6 install -r requirements/pip3.6.txt
 
 echo "## Clean up yum metadata which may become stale during Vagrant box distribution."
 sudo yum clean all --quiet

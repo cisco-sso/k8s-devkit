@@ -1,2 +1,2 @@
-Jinja2==2.9.6
-PyYAML==3.12
+Jinja2>=2.9.6
+PyYAML>=3.12
