@@ -9,6 +9,7 @@
   * Operating Kubernetes clusters.
   * Deploying Kubernetes clusters to AWS using `kops`.
   * Developing and applying Helm Charts and mh Apps.
+  * Developing docker containers.
 * Extends:
   [bento/centos-7.4](https://app.vagrantup.com/bento/boxes/centos-7.4).
 * By default, `vagrant up` and `vagrant provision` will apply the all-in-one
@@ -62,8 +63,8 @@ OSX: <Spotlight_Search -> Keybase>
 Windows: <Windows_Search -> Keybase>
 
 # Ensure you are registered on keybase with your full name and at least one
-#   verification.
-# Ask your team lead to add you to the keybase team ***REMOVED***
+#   verification.  Keybase is the encrypted store used to share team secrets.
+# Ask your team lead to add you to any relevant keybase teams.
 
 # Ensure that keybaseFS is configured and mounted on your system
 <Keybase -> Folders -> "Display in Explorer" or "Open Folder" -> "Repair">
@@ -133,7 +134,7 @@ Windows: git config --global core.autocrlf false
 git clone git@github.com:cisco-sso/k8s-devkit.git
 cd k8s-devkit/
 
-# Create your config.yaml
+# Create your config.yaml (Optional)
 #  On Windows, the config.yaml file will look to be missing line endings if you
 #    open the file using notepad.exe.  Please edit the file below using
 #    wordpad.exe.
@@ -148,35 +149,23 @@ vagrant up
 vagrant ssh
 ```
 
-## Configuring your KDK Machie
+## Configuring your KDK Machine
 
 * `~/.aws/config`: Ensure there is an entry for each AWS account that you must
   access.  Tools such as the aws-cli, kops, and helm depend on these settings.
-  The name of each profile must match that listed in the http://go2/aws index
-  page.
+  The name of each profile must match that listed in the http://go2/aws (Cisco
+  only) index page.
 
 ```bash
 # EXAMPLE: ~/.aws/config
 
-[profile ***REMOVED***]
+[profile account-foo]
 output = json
 region = us-west-1
 
-[profile ***REMOVED***]
+[profile account-bar]
 output = json
 region = us-west-1
-
-[profile ***REMOVED***]
-output = json
-region = us-east-2
-
-[profile ***REMOVED***]
-output = json
-region = us-east-2
-
-[profile ***REMOVED***]
-output = json
-region = us-east-2
 ```
 
 * `~/.aws/credentials`: Ensure there is an entry for each AWS account that you
@@ -187,23 +176,11 @@ region = us-east-2
 
 ```bash
 # EXAMPLE: ~/.aws/credentials
-[***REMOVED***]
+[account-foo]
 aws_access_key_id = XXXXXXXXXXXXXXXXXXXX
 aws_secret_access_key = YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY
 
-[***REMOVED***]
-aws_access_key_id = XXXXXXXXXXXXXXXXXXXX
-aws_secret_access_key = YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY
-
-[***REMOVED***]
-aws_access_key_id = XXXXXXXXXXXXXXXXXXXX
-aws_secret_access_key = YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY
-
-[***REMOVED***]
-aws_access_key_id = XXXXXXXXXXXXXXXXXXXX
-aws_secret_access_key = YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY
-
-[***REMOVED***]
+[account-bar]
 aws_access_key_id = XXXXXXXXXXXXXXXXXXXX
 aws_secret_access_key = YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY
 ```
@@ -212,7 +189,7 @@ aws_secret_access_key = YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY
 
 ```
 cd ~/
-git clone git@github.com:cisco-sso/k8s-deploy.git
+git clone git@github.com:cisco-sso/k8s-deploy.git  # Or platform-deploy within Cisco
 cd k8s-deploy
 direnv allow
 
@@ -223,7 +200,7 @@ direnv allow
 #   execute the .envrc script.
 
 # Activate cluster1 settings by entering the directory
-cd clusters/cluster1.***REMOVED***
+cd clusters/cluster1.domain.com
 direnv allow
 
 # Ensure that aws cli works
@@ -240,7 +217,7 @@ kubectl cluster-info
 helm ls
 
 # Activate cluster3 settings by entering the directory
-cd ../cluster3.***REMOVED***
+cd ../cluster3.domain.com
 direnv allow
 ... <do the same thing above to verify that you can access cluster3>
 ```
@@ -258,6 +235,22 @@ git pull --ff-only
 vagrant up  # if the machine is halted
 vagrant provision  # if the machine is already up
 
+```
+
+## Saving and Restoring snapshots
+
+It is often useful to save a snapshot of the vagrant machine.
+
+```
+# Halt before saving snapshots
+vagrant halt
+vagrant snapshot save pristine-install
+
+# Restring snapshots
+vagrant snapshot restore pristine-install
+
+# Listing snapshots
+vagrant snapshot list
 ```
 
 ## Packaging and Reuse.
