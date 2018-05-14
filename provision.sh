@@ -51,13 +51,9 @@ sudo \
 
 echo "  "  # Highlight Ansible results.
 
-
-# echo "## Ensure vagrant owns everything in its home dir."
-# sudo chown -R 1000:1000 /home/vagrant
-
 echo "## Setup default dotfiles"
 if [[ ! -d /home/vagrant/.yadm ]]; then
-  sudo -i -u vagrant yadm clone https://github.com/dcwangmit01/yadm-dotfiles.git
+  sudo -i -u vagrant yadm clone https://github.com/cisco-sso/yadm-dotfiles.git
 fi
 
 echo "## Clean up yum metadata which may become stale during Vagrant box distribution."
