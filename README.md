@@ -4,7 +4,22 @@
 
 ## Background
 
-* This Vagrant Box is dedicated to Kubernetes (and other Cloud Native) DevOps.
+The k8s-devkit repository may be used to create a virtual machine with all of
+the tools that one would typically use in order to develop and operate
+kubernetes clusters.
+
+Getting setup to create and operate a Kubernetes cluster in AWS, Openstack, or
+even locally may be painful because a user may be running Windows10 or OSX, and
+one must configure 20+ tools for cluster automation to work effectively. We've
+created a Vagrant VirtualMachine to enable every one of us to work in the same
+environment, with the same tools, at the same versions.
+
+Tools include: docker, kubectl, helm, multihelm, kops, terraform, ansible,
+minio-cli, aws-cli, direnv, golang, git, vi/vim, emacs, python 2/3, jq, zsh,
+helm-s3, kafkacat, dig, ssh-keygen, gitslave, dep, gomplate, minikube, awscli,
+docker-compose, neutronclient, openstackclient, supernova, virtualenv, yq,
+colordiff, nmap, screen, tmux, yadm, and many others.
+
 * Some example use cases include:
   * Operating Kubernetes clusters.
   * Deploying Kubernetes clusters to AWS using `kops`.
