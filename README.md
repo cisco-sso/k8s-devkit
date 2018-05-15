@@ -31,7 +31,8 @@
 /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 
 # Install Virtualbox, Vagrant, Keybase
-brew cask install virtualbox vagrant keybase git
+brew install git
+brew cask install virtualbox vagrant keybase
 
 # Reboot system for Virtualbox and Vagrant
 sudo shutdown -r now
