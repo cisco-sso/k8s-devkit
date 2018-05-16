@@ -65,6 +65,11 @@ Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.We
 # Install Virtualbox, Vagrant, Keybase
 choco.exe install -y virtualbox vagrant keybase openssh git
 
+# Disable Windows Hyper-V which interferes with Virtualbox
+#   If Hyper-V is enabled you will receive the following error upon vagrant up
+#   "VT-x is not available"
+dism.exe /Online /Disable-Feature:Microsoft-Hyper-V
+
 # Reboot System for Virtualbox and Vagrant
 shutdown /r /t 0
 ```
