@@ -37,12 +37,30 @@ end
 # you're doing.
 Vagrant.configure("2") do |config|
 
-  # Install Vagrant plugins if they are not already installed.
-  required_plugins = %w( vagrant-vbguest vagrant-disksize vagrant-proxyconf )
+  # Install Vagrant plugins if they are NOT already installed.
+  install_plugins = %w( vagrant-disksize vagrant-proxyconf )
   _retry = false
-  required_plugins.each do |plugin|
+  install_plugins.each do |plugin|
     unless Vagrant.has_plugin? plugin
       system "vagrant plugin install #{plugin}"
+      _retry=true
+    end
+  end
+  if (_retry)
+    exec "vagrant " + ARGV.join(' ')
+  end
+
+  # Remove Vagrant plugins if they ARE already installed.
+  #   Force uninstall of vagrant-vbguest.  On vbox 5.2.12 working on the bento
+  #     centos7 image, it uninstalls the existing vbox-additions 5.2.6 and then
+  #     fails to install vbox-additions 5.2.12 because it fails to install
+  #     kernel-devel package most likely becuase of lack of yum update.
+  #     Re-enable once re-tested in a few months.
+  remove_plugins = %w( vagrant-vbguest )
+  _retry = false
+  remove_plugins.each do |plugin|
+    if Vagrant.has_plugin? plugin
+      system "vagrant plugin uninstall #{plugin}"
       _retry=true
     end
   end
