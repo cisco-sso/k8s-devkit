@@ -4,8 +4,15 @@
 # ref: https://github.com/cisco-sso/ansible-role-k8s-devkit/blob/master/defaults/main.yml
 # ref: http://docs.ansible.com/ansible/latest/playbooks_variables.html
 
-# host machine configs
-host_dev_folder: ~/Dev
+# Shared folder mounts from host location to guest location
+#   Only mounts if they exist
+shared_folder_mounts:
+- from_host: ~/Dev
+  to_guest:  /home/vagrant/Dev
+- from_host: ~/projects
+  to_guest:  /home/vagrant/projects
+- from_host: ~/git
+  to_guest:  /home/vagrant/git
 
 # guest machine
 network:
