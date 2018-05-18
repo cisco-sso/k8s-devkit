@@ -69,8 +69,20 @@ end
 
 require 'yaml'
 
-config_file = File.dirname(File.expand_path(__FILE__)) + "/config.yaml"
-custom = if File.exist?(config_file) then YAML.load_file(config_file) else nil end
+custom = nil
+custom_configs = %w( config.yaml config.yaml.default )  # order matters
+custom_configs.each { |filename|
+  filepath = File.dirname(File.expand_path(__FILE__)) + "/" + filename
+  if File.exist?(filepath)
+    custom = YAML.load_file(filepath)
+    break
+  end
+}
+if custom.nil?
+  puts "Unable to location configuration file. One of the following must exist"
+  puts custom_configs
+  exit 1
+end
 
 #####################################################################
 # All Vagrant configuration is done below. The "2" in Vagrant.configure
@@ -83,7 +95,7 @@ Vagrant.configure("2") do |config|
   # config.vm.hostname = "kdk"
 
   # Network Configuration (setups up second interface to be bridged net, eth0 remains NAT)
-  if custom != nil && custom.key?('network') && custom['network']['type'] == "public"
+  if custom.key?('network') && custom['network']['type'] == "public"
     config.vm.network "public_network",
                     bridge: [ custom['network']['bridge'] ],
                     ip: custom['network']['address'],
@@ -137,29 +149,38 @@ Vagrant.configure("2") do |config|
   # your network.
   # config.vm.network "public_network"
 
-  # Mount some directories from host in guest if they exist.
-  ## Place to store your "Dev" stuff.
-
-  host_dev_folder = if custom != nil && custom.key?('host_dev_folder') then custom['host_dev_folder'] else "~/Dev" end
-  if File.directory?(File.expand_path(host_dev_folder))
-    config.vm.synced_folder host_dev_folder, "/home/vagrant/Dev"
-  end
-
-  ## Place to store secrets.
+  ## Mount KeybaseFS directories
   ## ATTENTION: Requires Keybase client activation/sign-in on host OS.
   require 'pathname'
   keybase_dirs = [ "private", "public", "team" ]
   keybase_dirs.each { |dir|
-    guest_path = "/keybase/" + dir
-    host_path = String(Pathname.new(keybase_root + "/" + dir).realpath)
+    # realpath needed to resolve keybase symlinks
+    from_host = String(Pathname.new(keybase_root + "/" + dir).realpath)
+    to_guest = "/keybase/" + dir
 
-    if File.directory?(host_path)
+    if File.directory?(from_host)
       # parent dirs to be auto-created by synced_folder mount
-      config.vm.synced_folder host_path, guest_path
+      config.vm.synced_folder from_host, to_guest
     else
       puts "WARNING: Failed to mount keybase.io VirtualFS"
-      puts "  host_path: " + host_path
-      puts "  guest_path: " + guest_path
+      puts "  from_host: " + from_host
+      puts "  to_guest:  " + to_guest
+    end
+  }
+
+  # Mount user-defined directories if they exist
+  ## Place to store your "Dev" stuff.
+  custom['shared_folder_mounts'].each { |mount|
+    from_host = File.expand_path(mount['from_host'])
+    to_guest = mount['to_guest']
+
+    if File.directory?(from_host)
+      # parent dirs to be auto-created by synced_folder mount
+      config.vm.synced_folder from_host, to_guest
+    else
+      puts "WARNING: Will skip mounting of non-existent optional host directory"
+      puts "  from_host: " + from_host
+      puts "  to_guest:  " + to_guest
     end
   }
 
