@@ -31,41 +31,79 @@ def env(name)
 end
 
 #####################################################################
+# Manage Plugins
+
+# Install Vagrant plugins if they are NOT already installed.
+install_plugins = %w( vagrant-disksize vagrant-proxyconf )
+_retry = false
+install_plugins.each do |plugin|
+  unless Vagrant.has_plugin? plugin
+    system "vagrant plugin install #{plugin}"
+    _retry=true
+  end
+end
+if (_retry)
+  exec "vagrant " + ARGV.join(' ')
+end
+
+# Remove Vagrant plugins if they ARE already installed.
+#   Force uninstall of vagrant-vbguest.  On vbox 5.2.12 working on the bento
+#     centos7 image, it uninstalls the existing vbox-additions 5.2.6 and then
+#     fails to install vbox-additions 5.2.12 because it fails to install
+#     kernel-devel package most likely becuase of lack of yum update.
+#     Re-enable once re-tested in a few months.
+remove_plugins = %w( vagrant-vbguest )
+_retry = false
+remove_plugins.each do |plugin|
+  if Vagrant.has_plugin? plugin
+    system "vagrant plugin uninstall #{plugin}"
+    _retry=true
+  end
+end
+if (_retry)
+  exec "vagrant " + ARGV.join(' ')
+end
+
+#####################################################################
+# Configuration file
+
+require 'yaml'
+
+config_file = File.dirname(File.expand_path(__FILE__)) + "/config.yaml"
+custom = if File.exist?(config_file) then YAML.load_file(config_file) else nil end
+
+#####################################################################
 # All Vagrant configuration is done below. The "2" in Vagrant.configure
 # configures the configuration version (we support older styles for
 # backwards compatibility). Please don't change it unless you know what
 # you're doing.
 Vagrant.configure("2") do |config|
 
-  # Install Vagrant plugins if they are NOT already installed.
-  install_plugins = %w( vagrant-disksize vagrant-proxyconf )
-  _retry = false
-  install_plugins.each do |plugin|
-    unless Vagrant.has_plugin? plugin
-      system "vagrant plugin install #{plugin}"
-      _retry=true
-    end
-  end
-  if (_retry)
-    exec "vagrant " + ARGV.join(' ')
-  end
+  # Set the hostname for this instance
+  # config.vm.hostname = "kdk"
 
-  # Remove Vagrant plugins if they ARE already installed.
-  #   Force uninstall of vagrant-vbguest.  On vbox 5.2.12 working on the bento
-  #     centos7 image, it uninstalls the existing vbox-additions 5.2.6 and then
-  #     fails to install vbox-additions 5.2.12 because it fails to install
-  #     kernel-devel package most likely becuase of lack of yum update.
-  #     Re-enable once re-tested in a few months.
-  remove_plugins = %w( vagrant-vbguest )
-  _retry = false
-  remove_plugins.each do |plugin|
-    if Vagrant.has_plugin? plugin
-      system "vagrant plugin uninstall #{plugin}"
-      _retry=true
+  # Network Configuration (setups up second interface to be bridged net, eth0 remains NAT)
+  if custom != nil && custom.key?('network') && custom['network']['type'] == "public"
+    config.vm.network "public_network",
+                    bridge: [ custom['network']['bridge'] ],
+                    ip: custom['network']['address'],
+                    auto_config: false
+    config.vm.provision "shell", run: "always" do |shell|
+      shell.privileged = false
+      shell.env = {
+        "PUBLIC_NETWORK_GATEWAY"   => custom['network']['gateway'],
+        "PUBLIC_NETWORK_INTERFACE" => custom['network']['interface']
+      }
+      shell.inline = <<-SHELL
+        sudo systemctl stop NetworkManager.service
+        sudo route add default gw $PUBLIC_NETWORK_GATEWAY $PUBLIC_NETWORK_INTERFACE
+      SHELL
     end
-  end
-  if (_retry)
-    exec "vagrant " + ARGV.join(' ')
+  else  # network.type == "private"
+    # Only forward host ports to vagrant machine ports for private networks
+    # config.vm.network "forwarded_port", guest:   80, host: 10080
+    # config.vm.network "forwarded_port", guest:  443, host: 10443
+    # config.vm.network "forwarded_port", guest: 8080, host: 18080
   end
 
   # Set box disk size.
@@ -101,18 +139,10 @@ Vagrant.configure("2") do |config|
 
   # Mount some directories from host in guest if they exist.
   ## Place to store your "Dev" stuff.
-  require 'yaml'
 
-  config_file = File.dirname(File.expand_path(__FILE__)) + "/config.yaml"
-
-  if File.exist?(config_file)
-    kdk_dev_folder = YAML.load_file(config_file)['kdk_dev_folder']
-  else
-    kdk_dev_folder = "Dev"
-  end
-
-  if File.directory?(File.expand_path("~/" + kdk_dev_folder))
-    config.vm.synced_folder "~/" + kdk_dev_folder, "/home/vagrant/Dev"
+  host_dev_folder = if custom != nil && custom.key?('host_dev_folder') then custom['host_dev_folder'] else "~/Dev" end
+  if File.directory?(File.expand_path(host_dev_folder))
+    config.vm.synced_folder host_dev_folder, "/home/vagrant/Dev"
   end
 
   ## Place to store secrets.
