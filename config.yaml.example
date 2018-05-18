@@ -1,8 +1,25 @@
 ---
-# configuration override file for ansible-role-k8s-devkit
+# configuration override file for k8s-devkit and ansible-role-k8s-devkit
 #
 # ref: https://github.com/cisco-sso/ansible-role-k8s-devkit/blob/master/defaults/main.yml
 # ref: http://docs.ansible.com/ansible/latest/playbooks_variables.html
+
+# host machine configs
+host_dev_folder: ~/Dev
+
+# guest machine
+network:
+  # Setting network type (Only tested with OSX):
+  #   Valid values are "public" or "private".
+  #   Private uses NAT
+  #   Public will create a second network interface configured to bridge
+  #     traffic to the host network interface selected by interfface and bridge.
+  #   All other network settings will be ignored if type==private.
+  type: "private"
+  address: "192.168.0.10"
+  gateway: "192.168.0.1"
+  interface: "enp0s8"      # internal interface name from inside the vagrant machine
+  bridge: "en0: Ethernet"  # must match bridge interface on OSX host
 
 # KDK
 #   User should remain `vagrant` for KDK virtual machine.
@@ -10,7 +27,6 @@
 #     Centos7 box.
 kdk_user: vagrant
 kdk_user_home: /home/vagrant
-kdk_dev_folder: Dev
 
 # bitbucket
 bitbucket_user: example
