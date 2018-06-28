@@ -160,7 +160,7 @@ Vagrant.configure("2") do |config|
 
     if File.directory?(from_host)
       # parent dirs to be auto-created by synced_folder mount
-      config.vm.synced_folder from_host, to_guest
+      config.vm.synced_folder from_host, to_guest, mount_options: ["dmode=700,fmode=600"]
     else
       puts "WARNING: Failed to mount keybase.io VirtualFS"
       puts "  from_host: " + from_host
