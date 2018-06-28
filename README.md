@@ -159,7 +159,7 @@ cd k8s-devkit/
 #  On Windows, the config.yaml file will look to be missing line endings if you
 #    open the file using notepad.exe.  Please edit the file below using
 #    wordpad.exe.
-cp config.yaml.example config.yaml
+cp config.yaml.default config.yaml
 <Edit to customize config.yaml with your github user, bitbucket user, etc>
 
 # Create and start your KDK VM.
