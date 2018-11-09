@@ -1,4 +1,6 @@
-# Kubernetes KDK (Kubernetes Development Kit)
+# [DEPRECATED] Kubernetes KDK (Kubernetes Development Kit)
+
+# This repository no longer maintained.  Please use the dockerized open-source version at https://github.com/cisco-sso/kdk
 
 **k8s-devkit**
 
